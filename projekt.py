@@ -68,8 +68,7 @@ kwargs = {
         }
 
 # >> Imports <<
-import importlib
-from lib.modules import BaseModule
+from lib.modules import ModuleLoader as module
 
 # >> Main (Methods) <<
 def list_modules():
@@ -82,22 +81,9 @@ def load_modules(mod_list):
             mod_args = ''
             if len(mod) > 1:
                 mod_args = " ".join(mod[1:])
-            load_module(mod_name, mod_args)
 
-def load_module(mod_name, mod_args):
-    print (">>Processing  '{}', '{}'".format(mod_name, mod_args))
-    try:
-        module = importlib.import_module('modules.{}'.format(mod_name))
-    except ModuleNotFoundError:
-        pass
-    else:    
-        if hasattr(module, mod_name):
-            mod_class = getattr(module, mod_name)
-            if issubclass(mod_class, BaseModule):
-                mod_obj = mod_class(**kwargs)
-                mod_obj.call()
-                return
-    raise Exception('Module "{}" not found or is incorrect.'.format(mod_name))
+            mod_obj = module.load(mod_name, **kwargs)
+            mod_obj.call()
 
 # >> Main <<
 if args.mod_list:

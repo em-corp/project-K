@@ -1,4 +1,7 @@
+__all__ = []
+
 import random
+import importlib
 
 class BaseModule:
     def __init__(self, proxy_list=[], ua_list=[], max_threads=1, verbosity=0):
@@ -51,4 +54,19 @@ class BaseModule:
     
     def addUserAgent(self, ua=''):
         self.ua_list.append(ua)
+
+
+class ModuleLoader:
+    def load(mod_name, **def_args):
+        try:
+            module = importlib.import_module('modules.{}'.format(mod_name))
+        except ModuleNotFoundError:
+            pass
+        else:    
+            if hasattr(module, mod_name):
+                mod_class = getattr(module, mod_name)
+                if issubclass(mod_class, BaseModule):
+                    mod_obj = mod_class(**def_args)
+                    return mod_obj
+        raise Exception('Module "{}" not found or is incorrect.'.format(mod_name))
 
