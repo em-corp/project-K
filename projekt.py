@@ -31,7 +31,7 @@ import argparse
 
 parser = argparse.ArgumentParser(prog='projekt')
 
-parser.add_argument('-m', '--module', help='Run module[s] with[out] arguments. Each modules are called seperatly. e.g -m "mod1_name" "mod1_args" -m "mod2_name" "mod2_args" "mod2_more_args"', dest='modules', action='append', nargs='+', metavar='mod_args')
+parser.add_argument('-m', '--module', help='Run module[s] with[out] arguments. Each modules are called seperatly. For modules options; provide `-h` in `mod_args`. Note: Please provide extra leading space in module\'s argument to not to let it expand before it is needed.  (e.g -m "mod1_name" "mod1_args" or -m "mod2_name" "mod2_args" "mod2_more_args" or -m "mod_name"  " -h")', dest='modules', action='append', nargs='+', metavar='mod_args')
 parser.add_argument('-L', '--list', help='List available modules', action='store_true', default=False, dest='mod_list')
 
 parser.add_argument('-P', '--proxy', help='Add prox(y|ies) to use, Use "," to seperate multiple.', dest='proxies', type=str)
@@ -76,7 +76,7 @@ def list_modules():
 
 def load_modules(mod_list):
     for mod in args.modules:
-        if mod: 
+        if mod:
             mod_name = mod[0]
             mod_args = ''
             if len(mod) > 1:
@@ -91,8 +91,8 @@ if args.mod_list:
     quit()
 
 if args.modules:
-  #  try:
+    try:
         load_modules(args.modules)
-#    except Exception as e:
- #       print("[ERROR]: {}".format(e))
+    except Exception as e:
+        print("[ERROR]: {}".format(e))
 

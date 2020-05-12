@@ -23,7 +23,7 @@ class BaseModule:
 
     def getParser(self):
         if not hasattr(self, 'parser'): 
-            self.parser = argparse.ArgumentParser()
+            self.parser = argparse.ArgumentParser(prog='projekt -m {}'.format(self.__class__.__name__))
         return self.parser 
 
     def defineArgs(self):
