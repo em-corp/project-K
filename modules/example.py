@@ -1,3 +1,9 @@
+# * if needed to run seperately
+if __name__ == "__main__":
+    import sys
+    # * insert lib's parent dir to sys.path at beginning
+    sys.path.insert(0, "{}/../".format(sys.path[0]))
+
 from lib.modules import BaseModule
 import argparse
 
@@ -35,3 +41,16 @@ class example (BaseModule):
         print("============> {}".format(self.getArg('defin')))
         print("============> {}".format(self.getArgs().exp))
         print("============> {}".format(self.getArg('exp')))
+
+# * if needed to run seperately
+if __name__ == "__main__":
+    kwargs = {
+            'proxy_list': '',
+            'ua_list' : '',
+            'max_threads': 1,
+            'verbosity': 5
+        }
+    mod_obj = example(**kwargs)
+    #mod_obj = example()
+    mod_obj.call(" ".join(sys.argv[1:]))
+
