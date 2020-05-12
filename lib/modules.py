@@ -3,6 +3,8 @@ __all__ = []
 import random
 import importlib
 import argparse
+import os
+import sys
 
 class BaseModule:
     def __init__(self, proxy_list=[], ua_list=[], max_threads=1, verbosity=0):
@@ -96,3 +98,17 @@ class ModuleLoader:
                     return mod_obj
         raise Exception('Module "{}" not found or is incorrect.'.format(mod_name))
 
+
+class ModuleMeta:
+    def list():
+        mod_list = []
+        # expecting program is run through main file
+        # TODO: need to remove the expectation
+        mod_dir = "{}/modules".format(sys.path[0])
+        
+        if os.path.exists(mod_dir) and os.path.isdir(mod_dir):
+            for f in os.listdir(mod_dir):
+                if not f.startswith('_'):
+                    mod_list.append(f.replace('.py', ''))
+
+        return mod_list

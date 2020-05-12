@@ -69,10 +69,17 @@ kwargs = {
 
 # >> Imports <<
 from lib.modules import ModuleLoader as module
+from lib.modules import ModuleMeta
 
 # >> Main (Methods) <<
 def list_modules():
-    pass
+    l = ModuleMeta.list()
+    if len(l) > 0:
+        print("Available Modules:")
+        for i in l:
+            print ("[*] {mod_name}".format(mod_name=i))
+    else:
+        print("No Modules available.")
 
 def load_modules(mod_list):
     for mod in args.modules:
