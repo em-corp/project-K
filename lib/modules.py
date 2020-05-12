@@ -35,7 +35,10 @@ class BaseModule:
 
     def getArgs(self):
         return self.args
-        
+       
+    def getArg(self, key):
+        return vars(self.getArgs())[key]
+
     def getProxyList(self):
         return self.proxy_list
 

@@ -26,8 +26,11 @@ class example (BaseModule):
     def main(self):
         # * main method to start custom calls
         # * retrive arguments by `self.getArgs()` call
+        # * or, retrive arguments by `self.getArg('arg_name')` call
 
         print("============> {}".format(self.getVerbosity()))
         
-        print("============> {}".format(self.args.defin))
-        print("============> {}".format(self.args.exp))
+        print("============> {}".format(self.getArgs().defin))
+        print("============> {}".format(self.getArg('defin')))
+        print("============> {}".format(self.getArgs().exp))
+        print("============> {}".format(self.getArg('exp')))
