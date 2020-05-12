@@ -32,7 +32,7 @@ import argparse
 parser = argparse.ArgumentParser(prog='projekt')
 
 parser.add_argument('-m', '--module', help='Run module[s] with[out] arguments. Each modules are called seperatly. e.g -m "mod1_name" "mod1_args" -m "mod2_name" "mod2_args" "mod2_more_args"', dest='modules', action='append', nargs='+', metavar='mod_args')
-parser.add_argument('-L', '--list', help='List available modules', action='store_true', default=False)
+parser.add_argument('-L', '--list', help='List available modules', action='store_true', default=False, dest='mod_list')
 
 parser.add_argument('-P', '--proxy', help='Add prox(y|ies) to use, Use "," to seperate multiple.', dest='proxies', type=str)
 parser.add_argument('-U', '--useragent', help="Add useragents", dest='ua', type=str)
@@ -60,7 +60,6 @@ verbose_level = 0
 if args.verbose:
     verbose_level = int(args.verbose)
 
-
 kwargs = {
         'proxy_list': proxy_list,
         'ua_list' : ua_list,
@@ -68,6 +67,46 @@ kwargs = {
         'verbosity': verbose_level
         }
 
-# >> Main <<
+# >> Imports <<
+import importlib
+from lib.modules import BaseModule
 
+# >> Main (Methods) <<
+def list_modules():
+    pass
+
+def load_modules(mod_list):
+    for mod in args.modules:
+        if mod: 
+            mod_name = mod[0]
+            mod_args = ''
+            if len(mod) > 1:
+                mod_args = " ".join(mod[1:])
+            load_module(mod_name, mod_args)
+
+def load_module(mod_name, mod_args):
+    print (">>Processing  '{}', '{}'".format(mod_name, mod_args))
+    try:
+        module = importlib.import_module('modules.{}'.format(mod_name))
+    except ModuleNotFoundError:
+        pass
+    else:    
+        if hasattr(module, mod_name):
+            mod_class = getattr(module, mod_name)
+            if issubclass(mod_class, BaseModule):
+                mod_obj = mod_class(**kwargs)
+                mod_obj.call()
+                return
+    raise Exception('Module "{}" not found or is incorrect.'.format(mod_name))
+
+# >> Main <<
+if args.mod_list:
+    list_modules()
+    quit()
+
+if args.modules:
+    try:
+        load_modules(args.modules)
+    except Exception as e:
+        print("[ERROR]: {}".format(e))
 
