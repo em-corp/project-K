@@ -2,6 +2,7 @@ __all__ = []
 
 import random
 import importlib
+import argparse
 
 class BaseModule:
     def __init__(self, proxy_list=[], ua_list=[], max_threads=1, verbosity=0):
@@ -10,9 +11,31 @@ class BaseModule:
         self.max_threads = max_threads
         self.verbosity = verbosity
 
-    def call(self, **kwargs):
-        self.main(**kwargs)
+    def call(self, args):
+        self.getParser()
+        self.defineArgs()
+        self.parseArgs(args)
+        self.main()
 
+    def main(self):
+        # * This method needs to be overridden in every module
+        pass
+
+    def getParser(self):
+        if not hasattr(self, 'parser'): 
+            self.parser = argparse.ArgumentParser()
+        return self.parser 
+
+    def defineArgs(self):
+        # * This method needs to be overridden in every module
+        pass
+
+    def parseArgs(self, args):
+        self.args = self.getParser().parse_args(args.split())
+
+    def getArgs(self):
+        return self.args
+        
     def getProxyList(self):
         return self.proxy_list
 

@@ -83,7 +83,7 @@ def load_modules(mod_list):
                 mod_args = " ".join(mod[1:])
 
             mod_obj = module.load(mod_name, **kwargs)
-            mod_obj.call()
+            mod_obj.call(mod_args)
 
 # >> Main <<
 if args.mod_list:
@@ -91,8 +91,8 @@ if args.mod_list:
     quit()
 
 if args.modules:
-    try:
+  #  try:
         load_modules(args.modules)
-    except Exception as e:
-        print("[ERROR]: {}".format(e))
+#    except Exception as e:
+ #       print("[ERROR]: {}".format(e))
 
