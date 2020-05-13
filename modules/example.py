@@ -1,8 +1,14 @@
 # * if needed to run seperately
 if __name__ == "__main__":
     import sys
-    # * insert lib's parent dir to sys.path at beginning
-    sys.path.insert(0, "{}/../".format(sys.path[0]))
+    import os
+
+    proj_path = os.path.realpath("{}/../".format(os.path.dirname(os.path.realpath(__file__))))
+    sys.path.insert(0, proj_path)
+
+    from lib.config import ConfigManager
+    cman = ConfigManager.load("{}/config/default.conf".format(proj_path))
+    cman.set('project_path', proj_path)
 
 from lib.modules import BaseModule
 import argparse
@@ -35,22 +41,20 @@ class example (BaseModule):
         # * retrive arguments by `self.getArgs()` call
         # * or, retrive arguments by `self.getArg('arg_name')` call
 
-        print("============> {}".format(self.getVerbosity()))
+        print("verbosity: {}".format(self.getVerbosity()))
         
-        print("============> {}".format(self.getArgs().defin))
-        print("============> {}".format(self.getArg('defin')))
-        print("============> {}".format(self.getArgs().exp))
-        print("============> {}".format(self.getArg('exp')))
+        print("def: {}".format(self.getArgs().defin))
+        print("def: {}".format(self.getArg('defin')))
+        print("exp: {}".format(self.getArgs().exp))
+        print("exp: {}".format(self.getArg('exp')))
 
 # * if needed to run seperately
 if __name__ == "__main__":
     kwargs = {
-            'proxy_list': '',
-            'ua_list' : '',
-            'max_threads': 1,
-            'verbosity': 5
+            'conf': cman
         }
+    # * If needed to pass more arg, use cman to set them
+    # cman.set('key', 'value')
     mod_obj = example(**kwargs)
     #mod_obj = example()
     mod_obj.call(" ".join(sys.argv[1:]))
-

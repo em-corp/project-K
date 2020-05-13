@@ -4,7 +4,6 @@ import random
 import importlib
 import argparse
 import os
-import sys
 
 class BaseModule:
     def __init__(self, **kwargs):
@@ -72,11 +71,9 @@ class ModuleLoader:
 
 
 class ModuleMeta:
-    def list():
+    def list(p_path):
         mod_list = []
-        # expecting program is run through main file
-        # TODO: need to remove the expectation
-        mod_dir = "{}/modules".format(sys.path[0])
+        mod_dir = "{}/modules".format(p_path)
         
         if os.path.exists(mod_dir) and os.path.isdir(mod_dir):
             for f in os.listdir(mod_dir):

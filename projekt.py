@@ -47,8 +47,12 @@ args = parser.parse_args()
 from lib.config import ConfigManager
 import os
 
-cfile = "{}/config/default.conf".format(os.path.dirname(os.path.realpath(__file__)))
+proj_path = os.path.dirname(os.path.realpath(__file__))
+cfile = "{}/config/default.conf".format(proj_path)
+
 cman = ConfigManager.load(cfile)
+
+cman.set('project_path', proj_path)
 
 if args.proxies:
     cman.set("proxy_list", args.proxies.split(','))
@@ -72,7 +76,7 @@ from lib.modules import ModuleMeta
 
 # >> Main (Methods) <<
 def list_modules():
-    l = ModuleMeta.list()
+    l = ModuleMeta.list(cman.get('project_path'))
     if len(l) > 0:
         print("Available Modules:")
         for i in l:
