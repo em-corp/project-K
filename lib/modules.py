@@ -7,10 +7,10 @@ import os
 import sys
 
 class BaseModule:
-    def __init__(self, **kwargs)
+    def __init__(self, **kwargs):
         if 'conf' in kwargs.keys():
             self.conf = kwargs['conf']
-        else
+        else:
             self.conf = {}  # This should never happens, but keep it
 
     def call(self, args):
