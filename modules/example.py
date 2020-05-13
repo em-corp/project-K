@@ -42,6 +42,7 @@ class example (BaseModule):
         # * or, retrive arguments by `self.getArg('arg_name')` call
 
         print("verbosity: {}".format(self.getVerbosity()))
+        print("verbosity: {}".format(self.getConfig().get('verbosity')))
         
         print("def: {}".format(self.getArgs().defin))
         print("def: {}".format(self.getArg('defin')))
