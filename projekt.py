@@ -43,28 +43,27 @@ parser.add_argument('-V', '--version', help='Show version and exit', action='ver
 
 args = parser.parse_args()
 
-# >> Global Argument parse <<
-proxy_list = []
+# >> Global Argument parse  & Build Conf<<
+from lib.config import ConfigManager
+import os
+
+cfile = "{}/config/default.conf".format(os.path.dirname(os.path.realpath(__file__)))
+cman = ConfigManager.load(cfile)
+
 if args.proxies:
-    proxy_list = args.proxies.split(',')
+    cman.set("proxy_list", args.proxies.split(','))
 
-ua_list = []
 if args.ua:
-    ua_list = args.ua.split(',')
+    cman.set("ua_list", args.ua.split(','))
 
-max_threads = 1
 if args.threads:
-    max_threads = int(args.threads)
+    cman.set("max_threads", int(args.threads))
 
-verbose_level = 0
 if args.verbose:
-    verbose_level = int(args.verbose)
+    cman.set("verbosity", int(args.verbose))
 
 kwargs = {
-        'proxy_list': proxy_list,
-        'ua_list' : ua_list,
-        'max_threads': max_threads,
-        'verbosity': verbose_level
+        "conf": cman
         }
 
 # >> Imports <<

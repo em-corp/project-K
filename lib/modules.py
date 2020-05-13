@@ -7,11 +7,11 @@ import os
 import sys
 
 class BaseModule:
-    def __init__(self, proxy_list=[], ua_list=[], max_threads=1, verbosity=0):
-        self.proxy_list = proxy_list
-        self.ua_list = ua_list
-        self.max_threads = max_threads
-        self.verbosity = verbosity
+    def __init__(self, **kwargs)
+        if 'conf' in kwargs.keys():
+            self.conf = kwargs['conf']
+        else
+            self.conf = {}  # This should never happens, but keep it
 
     def call(self, args):
         self.getParser()
@@ -22,6 +22,9 @@ class BaseModule:
     def main(self):
         # * This method needs to be overridden in every module
         pass
+
+    def getConfig(self):
+        return self.conf
 
     def getParser(self):
         if not hasattr(self, 'parser'): 
@@ -41,48 +44,17 @@ class BaseModule:
     def getArg(self, key):
         return vars(self.getArgs())[key]
 
-    def getProxyList(self):
-        return self.proxy_list
-
-    def getUAList(self):
-        return self.ua_list
-
-    def getRandomProxy(self):
-        try:
-            return random.choice(self.proxy_list)
-        except IndexError:
-            return ''
-
-    def getRandomUserAgent(self):
-        try:
-            return random.choice(self.ua_list)
-        except IndexError:
-            return ''
-
     def getVerbosity(self):
-        return self.verbosity
+        return self.getConfig().get('verbosity')
 
     def getMaxAllowedThreads(self):
-        return self.max_threads
+        return self.getConfig().get('max_threads')
 
-    def setProxyList(self, l=[]):
-        self.proxy_list.append(l)
-
-    def setUAList(self, ual=[]):
-        self.ua_list.append(ual)
-
-    def setMaxAllowedThreads(self, c):
-        self.max_threads = c
+    def setMaxAllowedThreads(self, m):
+        self.getConfig().set('max_threads', m)
     
-    def serVerbosity(self, v):
-        self.verbosity = v
-
-    def addProxy(self, p=''):
-        self.proxy_list.append(p)
-    
-    def addUserAgent(self, ua=''):
-        self.ua_list.append(ua)
-
+    def setVerbosity(self, v):
+        self.getConfig().set('verbosity', v)
 
 class ModuleLoader:
     def load(mod_name, **def_args):
