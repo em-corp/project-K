@@ -144,7 +144,7 @@ def list_modules():
         print("No Modules available.")
 
 def load_modules(mod_list):
-    for mod in args.modules:
+    for mod in mod_list:
         if mod:
             mod_name = mod[0]
             mod_args = ''
@@ -163,6 +163,13 @@ def search_modules(keys):
     else:
         print("[*] No Results.")
     
+    print("Search by Keywords:")
+    rlist = ModuleMeta.searchByKeywords(keys, cman.get('project_path'))
+    if rlist:
+        for i in rlist:
+            print("[*] Match Found in module `{}`.".format(i))
+    else:
+        print("[*] No Results.")
 
 # >> Main <<
 if args.mod_list:
