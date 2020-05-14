@@ -97,7 +97,25 @@ class ModuleMeta:
         
         if os.path.exists(mod_dir) and os.path.isdir(mod_dir):
             for f in os.listdir(mod_dir):
-                if not f.startswith('_'):
-                    mod_list.append(f.replace('.py', ''))
+                if not f.startswith('_') and f.endswith('.py'):
+                    mname = f.replace('.py', '')
+                    if mname:
+                        mod_list.append(mname)
 
         return mod_list
+
+    def searchByName(kwrds, p_path):
+        ks = []
+        if isinstance(kwrds, list):
+            for i in kwrds:
+                ks += i.split(' ')
+        else:
+            ks = kwrds.split(' ')
+
+        rlist = []
+        for i in [x for x in ks if len(x) > 0]:
+            for j in ModuleMeta.list(p_path):
+                if j.lower().find(i.lower()) >= 0 and not j in rlist:
+                    rlist.append(j)
+        return rlist
+
