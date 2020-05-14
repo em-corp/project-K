@@ -34,8 +34,14 @@ parser = argparse.ArgumentParser(prog='projekt')
 parser.add_argument('-m', '--module', help='Run module[s] with[out] arguments. Each modules are called seperatly. For modules options; provide `-h` in `mod_args`. Note: Please provide extra leading space in module\'s argument to not to let it expand before it is needed.  (e.g -m "mod1_name" "mod1_args" or -m "mod2_name" "mod2_args" "mod2_more_args" or -m "mod_name"  " -h")', dest='modules', action='append', nargs='+', metavar=('mod_name', 'mod_args'))
 parser.add_argument('-L', '--list', help='List available modules', action='store_true', default=False, dest='mod_list')
 
-parser.add_argument('-P', '--proxy', help='Add prox(y|ies) to use, Use "," to seperate multiple.', dest='proxies', type=str)
-parser.add_argument('-U', '--useragent', help="Add useragents", dest='ua', type=str)
+proxy_group = parser.add_mutually_exclusive_group()
+proxy_group.add_argument('-P', '--proxy', help='Add proxy to use.', dest='proxy', type=str, metavar='proxy_url')
+proxy_group.add_argument('--proxy-file', help='Add file containing list of proxies. File should contain 1 proxy per line.', dest='proxyfile', type=str, metavar='proxy_file')
+
+ua_group = parser.add_mutually_exclusive_group()
+ua_group.add_argument('-U', '--useragent', help="Add useragent", dest='ua', type=str, metavar='useragent')
+ua_group.add_argument('--ua-file', help='Add file containing list of useragents. File should contain 1 useragent per line.', dest='uafile', type=str, metavar='ua_file')
+
 parser.add_argument('-p', '--parallel', help="Maximum number of parallel threads.", dest='threads', type=int)
 
 parser.add_argument('-v', '--verbose', help='Be verbose, Add multiple time to increase verbosity.', action='count', dest='verbose')
@@ -54,11 +60,49 @@ cman = ConfigManager.load(cfile)
 
 cman.set('project_path', proj_path)
 
-if args.proxies:
-    cman.set("proxy_list", args.proxies.split(','))
+def FiletoList(lfile, emsg):
+    lst = []
+    if os.path.exists(lfile) and os.path.isfile(lfile):
+        with open(lfile, 'r') as f:
+            for l in f:
+                lst.append(l)
+        return lst
+    else:
+        raise Exception(emsg)
+
+if args.proxy_url:
+    cman.set("proxy_list", [args.proxy_url])
+elif args.proxy_file:
+    pf = args.proxy_file
+    cman.set("proxy_list", FiletoList(pf, "Incorrect proxy file `{}`"\
+            .format(pf)))
+elif cman.get('proxy'):
+    # More specific, more preferred
+    cman.set("proxy_list", [cman.get('proxy')])
+elif cman.get('proxy_file'):
+    pf = cman.get('proxy_file')
+    cman.set("proxy_list", FiletoList(pf, "Incorrect proxy file `{}`"\
+            .format(pf)))
+else:
+    # If nothing then empty
+    cman.set("proxy_list", [])
+
+print(">>>>>>>>>>>>>>>>{}".format(cman.get('proxy_list')))                          #<-----------------------
 
 if args.ua:
-    cman.set("ua_list", args.ua.split(','))
+    cman.set("ua_list", [args.ua])
+elif args.uafile:
+    uaf = args.uafile
+    cman.set("ua_list", FiletoList(uaf, "Incorrect useragent file `{}`"\
+            .format(uaf)))
+elif cman.get('useragents_file'):
+    uaf = cman.get('useragents_file')
+    cman.set("ua_list", FiletoList(uaf, "Incorrect useragent file `{}`"\
+            .format(uaf)))
+else:
+    cman.set("ua_list", ["Project K/{version} (Linux; Python3 urllib)"\
+            .format(__VERSION__)])
+print(">>>>>>>>>>>>>>>>{}".format(cman.get('ua_list')))                             # <--------------------
 
 if args.threads:
     cman.set("max_threads", int(args.threads))
