@@ -4,19 +4,21 @@ import configparser
 
 class ConfigManager:
     config = None
-
-    def load(cfile):
+    
+    def getConfig():
         if not ConfigManager.config:
             ConfigManager.config = ConfigManager.Configuration()
-        
+        return ConfigManager.config
+
+    def load(cfile):
         conf = configparser.ConfigParser()
         conf.read(cfile)
         
         for s in conf.sections():
             for k in conf[s]:
-                ConfigManager.config.set(k, conf[s].get(k))
+                ConfigManager.getConfig().set(k, conf[s].get(k))
 
-        return ConfigManager.config
+        return ConfigManager.getConfig()
 
     class Configuration():
         def __init__(self):

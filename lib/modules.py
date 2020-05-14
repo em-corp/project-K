@@ -10,7 +10,8 @@ class BaseModule:
         if 'conf' in kwargs.keys():
             self.conf = kwargs['conf']
         else:
-            self.conf = {}  # This should never happens, but keep it
+            from lib.config import ConfigManager
+            self.conf = ConfigManager.getConfig()
 
     def call(self, args):
         self.getParser()
@@ -76,6 +77,9 @@ class BaseModule:
 
 class ModuleLoader:
     def load(mod_name, **def_args):
+        return ModuleLoader.getClass(mod_name)(**def_args)
+
+    def getClass(mod_name):
         try:
             module = importlib.import_module('modules.{}'.format(mod_name))
         except ModuleNotFoundError:
@@ -84,11 +88,9 @@ class ModuleLoader:
             if hasattr(module, mod_name):
                 mod_class = getattr(module, mod_name)
                 if issubclass(mod_class, BaseModule):
-                    mod_obj = mod_class(**def_args)
-                    return mod_obj
+                    return mod_class
         raise Exception('Module "{}" not found or is incorrect.'\
                 .format(mod_name))
-
 
 class ModuleMeta:
     def list(p_path):
@@ -97,7 +99,45 @@ class ModuleMeta:
         
         if os.path.exists(mod_dir) and os.path.isdir(mod_dir):
             for f in os.listdir(mod_dir):
-                if not f.startswith('_'):
-                    mod_list.append(f.replace('.py', ''))
+                if not f.startswith('_') and f.endswith('.py'):
+                    mname = f.replace('.py', '')
+                    if mname:
+                        mod_list.append(mname)
 
         return mod_list
+
+    def searchByName(kwrds, p_path):
+        ks = []
+        if isinstance(kwrds, list):
+            for i in kwrds:
+                ks += i.split(' ')
+        else:
+            ks = kwrds.split(' ')
+
+        rlist = []
+        for i in [x for x in ks if len(x) > 0]:
+            for j in ModuleMeta.list(p_path):
+                if j.lower().find(i.lower()) >= 0 and not j in rlist:
+                    rlist.append(j)
+        return rlist
+    
+    def searchByKeywords(kwrds, p_path):
+        ks = []
+        if isinstance(kwrds, list):
+            for i in kwrds:
+                ks += i.split(' ')
+        else:
+            ks = kwrds.split(' ')
+
+        rlist = []
+        for i in [x for x in ks if len(x) > 0]:
+            for j in ModuleMeta.list(p_path):
+                mkwrds = []
+                try:
+                    mkwrds = ModuleLoader.getClass(j).__KEYWORDS__
+                except Exception:
+                    pass
+                for k in mkwrds:
+                    if k.lower().find(i.lower()) >= 0 and not j in rlist:
+                        rlist.append(j)
+        return rlist

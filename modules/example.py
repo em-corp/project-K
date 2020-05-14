@@ -24,6 +24,7 @@ class example (BaseModule):
     * `defineArgs()` to define modules related arguments
     * `main()` to be able to call from parent class
     """
+    __KEYWORDS__ = ['example module', 'training', 'tutorial']
 
     def __init__(self, **kwargs):
         # * to pass global arguments to BaseModule
