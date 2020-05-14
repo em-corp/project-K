@@ -26,7 +26,8 @@ class ConfigManager:
             if key in self.properties.keys():
                 return self.properties[key]
             else:
-                raise self.NoSuchKeyException("No such key `{}` found".format(key))
+                raise self.NoSuchKeyException("No such key `{}` found"\
+                        .format(key))
 
         def set(self, key, value):
             self.properties[key] = value

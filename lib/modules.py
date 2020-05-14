@@ -27,7 +27,8 @@ class BaseModule:
 
     def getParser(self):
         if not hasattr(self, 'parser'): 
-            self.parser = argparse.ArgumentParser(prog='projekt -m {}'.format(self.__class__.__name__))
+            self.parser = argparse.ArgumentParser(prog='projekt -m {}'\
+                    .format(self.__class__.__name__))
         return self.parser 
 
     def defineArgs(self):
@@ -55,6 +56,24 @@ class BaseModule:
     def setVerbosity(self, v):
         self.getConfig().set('verbosity', v)
 
+    def getProxyList(self):
+        return self.getConfig().get('proxy_list')
+
+    def getRandomProxy(self):
+        try:
+            return random.choice(self.getProxyList())
+        except IndexError:
+            return ''
+
+    def getUAList(self):
+        return self.getConfig().get('ua_list')
+
+    def getRandomUserAgent(self):
+        try:
+            return random.choice(self.getUAList())
+        except IndexError:
+            return ''
+
 class ModuleLoader:
     def load(mod_name, **def_args):
         try:
@@ -67,7 +86,8 @@ class ModuleLoader:
                 if issubclass(mod_class, BaseModule):
                     mod_obj = mod_class(**def_args)
                     return mod_obj
-        raise Exception('Module "{}" not found or is incorrect.'.format(mod_name))
+        raise Exception('Module "{}" not found or is incorrect.'\
+                .format(mod_name))
 
 
 class ModuleMeta:

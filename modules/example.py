@@ -3,7 +3,8 @@ if __name__ == "__main__":
     import sys
     import os
 
-    proj_path = os.path.realpath("{}/../".format(os.path.dirname(os.path.realpath(__file__))))
+    proj_path = os.path.realpath("{}/../".format(os.path.dirname(os.path\
+            .realpath(__file__))))
     sys.path.insert(0, proj_path)
 
     from lib.config import ConfigManager
@@ -32,9 +33,12 @@ class example (BaseModule):
         # * define only arguments here
         # * do not define parser
         # * Always get parser with `self.getParser()` call
-        self.getParser().add_argument("-d", "--def", help = "test arg1", dest='defin')
-        self.getParser().add_argument("-e", "--exp", help = "test arg2", dest='exp')
-        self.getParser().add_argument("-v", "--version", help='version', action='version', version='5.1')
+        self.getParser().add_argument("-d", "--def", help = "test arg1", \
+                dest='defin')
+        self.getParser().add_argument("-e", "--exp", help = "test arg2", \
+                dest='exp')
+        self.getParser().add_argument("-v", "--version", help='version', \
+                action='version', version='5.1')
 
     def main(self):
         # * main method to start custom calls
@@ -43,6 +47,7 @@ class example (BaseModule):
 
         print("verbosity: {}".format(self.getVerbosity()))
         print("verbosity: {}".format(self.getConfig().get('verbosity')))
+        print("User Agent: {}".format(self.getRandomUserAgent()))
         
         print("def: {}".format(self.getArgs().defin))
         print("def: {}".format(self.getArg('defin')))

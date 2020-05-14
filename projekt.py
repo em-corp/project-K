@@ -70,10 +70,10 @@ def FiletoList(lfile, emsg):
     else:
         raise Exception(emsg)
 
-if args.proxy_url:
-    cman.set("proxy_list", [args.proxy_url])
-elif args.proxy_file:
-    pf = args.proxy_file
+if args.proxy:
+    cman.set("proxy_list", [args.proxy])
+elif args.proxyfile:
+    pf = args.proxyfile
     cman.set("proxy_list", FiletoList(pf, "Incorrect proxy file `{}`"\
             .format(pf)))
 elif cman.get('proxy'):
@@ -87,8 +87,6 @@ else:
     # If nothing then empty
     cman.set("proxy_list", [])
 
-print(">>>>>>>>>>>>>>>>{}".format(cman.get('proxy_list')))                          #<-----------------------
-
 if args.ua:
     cman.set("ua_list", [args.ua])
 elif args.uafile:
@@ -101,8 +99,7 @@ elif cman.get('useragents_file'):
             .format(uaf)))
 else:
     cman.set("ua_list", ["Project K/{version} (Linux; Python3 urllib)"\
-            .format(__VERSION__)])
-print(">>>>>>>>>>>>>>>>{}".format(cman.get('ua_list')))                             # <--------------------
+            .format(version=__VERSION__)])
 
 if args.threads:
     cman.set("max_threads", int(args.threads))
